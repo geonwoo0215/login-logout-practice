@@ -69,6 +69,36 @@ public class MemberRepository {
 
     }
 
+    public Member findById(Connection con, String memberId) {
+        String sql = "select * from member where id = ?";
+
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, memberId);
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                Member member = new Member();
+                member.setId(rs.getString("id"));
+                member.setEmail(rs.getString("email"));
+                member.setPassword(rs.getString("password"));
+                return member;
+            } else {
+                throw new NoSuchElementException("error = " + memberId);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            JdbcUtils.closeResultSet(rs);
+            JdbcUtils.closeStatement(pstmt);
+        }
+
+    }
+
+
     private void close(Connection con, PreparedStatement pstmt, ResultSet rs) {
         JdbcUtils.closeResultSet(rs);
         JdbcUtils.closeStatement(pstmt);
@@ -93,6 +123,25 @@ public class MemberRepository {
             throw new RuntimeException(e);
         } finally {
             close(con, pstmt, null);
+        }
+    }
+
+    public void update(Connection con, String memberId, String email, String password) {
+        String sql = "update member set email=?, password=? where id =?";
+
+        PreparedStatement pstmt = null;
+
+        try {
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, email);
+            pstmt.setString(2, password);
+            pstmt.setString(3, memberId);
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            JdbcUtils.closeStatement(pstmt);
         }
     }
 
