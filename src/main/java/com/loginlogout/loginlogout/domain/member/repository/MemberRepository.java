@@ -1,13 +1,21 @@
 package com.loginlogout.loginlogout.domain.member.repository;
 
 import com.loginlogout.loginlogout.domain.member.model.Member;
+import org.springframework.jdbc.support.JdbcUtils;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.NoSuchElementException;
 
 import static com.loginlogout.loginlogout.config.dbconst.ConnectionConst.*;
 
-public class MemberRepositoryV0 {
+public class MemberRepository {
+
+    private final DataSource dataSource;
+
+    public MemberRepository(DataSource dataSource){
+        this.dataSource = dataSource;
+    }
 
     public Member save(Member member){
         String sql = "insert into member(id, email, password) values(?,?,?);";
@@ -61,30 +69,10 @@ public class MemberRepositoryV0 {
 
     }
 
-    private static void close(Connection con, PreparedStatement pstmt, ResultSet rs) {
-        if (rs != null) {
-            try {
-                rs.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        if (pstmt != null) {
-            try {
-                pstmt.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        if (con != null) {
-            try {
-                con.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }
+    private void close(Connection con, PreparedStatement pstmt, ResultSet rs) {
+        JdbcUtils.closeResultSet(rs);
+        JdbcUtils.closeStatement(pstmt);
+        JdbcUtils.closeConnection(con);
     }
 
     public void update(String memberId, String email, String password) {
@@ -126,12 +114,8 @@ public class MemberRepositoryV0 {
         }
     }
 
-    public Connection getConnection() {
-        try {
-            return DriverManager.getConnection(URL, USERNAME, PASSWORD);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    public Connection getConnection() throws SQLException {
+       return dataSource.getConnection();
     }
 
 }

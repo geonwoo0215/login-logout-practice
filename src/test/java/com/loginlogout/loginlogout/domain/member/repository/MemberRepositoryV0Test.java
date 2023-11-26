@@ -1,15 +1,27 @@
 package com.loginlogout.loginlogout.domain.member.repository;
 
+import com.loginlogout.loginlogout.config.dbconst.ConnectionConst;
 import com.loginlogout.loginlogout.domain.member.model.Member;
-import org.assertj.core.api.Assertions;
+import com.zaxxer.hikari.HikariDataSource;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
+import static com.loginlogout.loginlogout.config.dbconst.ConnectionConst.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 class MemberRepositoryV0Test {
 
-    MemberRepositoryV0 repository = new MemberRepositoryV0();
+    MemberRepository repository;
+
+    @BeforeEach
+    void beforeEach() throws Exception{
+        HikariDataSource dataSource = new HikariDataSource();
+        dataSource.setJdbcUrl(URL);
+        dataSource.setUsername(USERNAME);
+        dataSource.setPassword(PASSWORD);
+        repository = new MemberRepository(dataSource);
+    }
 
     @Test
     void crud() {
