@@ -4,6 +4,7 @@ import com.loginlogout.loginlogout.domain.member.model.Member;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class MemberRepositoryV0Test {
@@ -16,7 +17,12 @@ class MemberRepositoryV0Test {
         repository.save(member);
 
         Member findMember = repository.findById(member.getId());
-        Assertions.assertThat(member).isEqualTo(findMember);
+        assertThat(member).isEqualTo(findMember);
+
+        repository.update(member.getId(), "email2", "password2");
+        Member updateMember = repository.findById(member.getId());
+        assertThat(updateMember.getEmail()).isEqualTo("email2");
+        assertThat(updateMember.getPassword()).isEqualTo("password2");
     }
 
 }
