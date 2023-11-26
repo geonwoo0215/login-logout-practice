@@ -108,6 +108,24 @@ public class MemberRepositoryV0 {
         }
     }
 
+    public void delete(String memberId) {
+        String sql = "delete from member where id = ?";
+
+        Connection con = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            con = getConnection();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, memberId);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            close(con,pstmt,null);
+        }
+    }
+
     public Connection getConnection() {
         try {
             return DriverManager.getConnection(URL, USERNAME, PASSWORD);

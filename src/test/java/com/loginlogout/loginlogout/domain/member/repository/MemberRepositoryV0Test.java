@@ -23,6 +23,9 @@ class MemberRepositoryV0Test {
         Member updateMember = repository.findById(member.getId());
         assertThat(updateMember.getEmail()).isEqualTo("email2");
         assertThat(updateMember.getPassword()).isEqualTo("password2");
+
+        repository.delete(member.getId());
+        assertThatThrownBy(()->repository.findById(member.getId())).isInstanceOf(RuntimeException.class);
     }
 
 }
