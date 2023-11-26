@@ -1,4 +1,4 @@
-package com.loginlogout.loginlogout.domain;
+package com.loginlogout.loginlogout.domain.member.model;
 
 public class Member {
 
@@ -14,4 +14,15 @@ public class Member {
         this.password = password;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
 }
