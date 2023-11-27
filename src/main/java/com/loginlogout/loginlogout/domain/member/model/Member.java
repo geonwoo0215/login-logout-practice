@@ -4,43 +4,56 @@ import java.util.Objects;
 
 public class Member {
 
-    private String id;
+    private Long id;
+    private String loginId;
 
     private String email;
 
     private String password;
 
+    private String nickName;
+
     public Member() {
     }
 
-    public Member(String id, String email, String password) {
+    public Member(Long id, String loginId, String email, String password, String nickName) {
         this.id = id;
+        this.loginId = loginId;
         this.email = email;
         this.password = password;
+        this.nickName = nickName;
     }
 
-    public String getId() {
-        return id;
+    public String getLoginId() {
+        return loginId;
+    }
+
+    public void setLoginId(String loginId) {
+        this.loginId = loginId;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public void setEmail(String email) {
         this.email = email;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 
     @Override
