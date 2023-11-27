@@ -24,6 +24,14 @@ public class Member {
         this.nickName = nickName;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getLoginId() {
         return loginId;
     }
@@ -58,14 +66,15 @@ public class Member {
 
     @Override
     public boolean equals(Object o) {
+
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Member member = (Member) o;
-        return Objects.equals(id, member.id) && Objects.equals(email, member.email) && Objects.equals(password, member.password);
+        return Objects.equals(id, member.id) && Objects.equals(loginId, member.loginId) && Objects.equals(email, member.email) && Objects.equals(password, member.password) && Objects.equals(nickName, member.nickName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, email, password);
+        return Objects.hash(id, loginId, email, password, nickName);
     }
 }

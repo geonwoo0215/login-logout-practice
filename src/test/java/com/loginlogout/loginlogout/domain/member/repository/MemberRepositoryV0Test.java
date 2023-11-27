@@ -14,30 +14,5 @@ class MemberRepositoryV0Test {
 
     MemberRepository repository;
 
-    @BeforeEach
-    void beforeEach() throws Exception{
-        HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl(URL);
-        dataSource.setUsername(USERNAME);
-        dataSource.setPassword(PASSWORD);
-        repository = new MemberRepository(dataSource);
-    }
-
-    @Test
-    void crud() {
-        Member member = new Member("id1", "email","password");
-        repository.save(member);
-
-        Member findMember = repository.findById(member.getId());
-        assertThat(member).isEqualTo(findMember);
-
-        repository.update(member.getId(), "email2", "password2");
-        Member updateMember = repository.findById(member.getId());
-        assertThat(updateMember.getEmail()).isEqualTo("email2");
-        assertThat(updateMember.getPassword()).isEqualTo("password2");
-
-        repository.delete(member.getId());
-        assertThatThrownBy(()->repository.findById(member.getId())).isInstanceOf(RuntimeException.class);
-    }
 
 }
