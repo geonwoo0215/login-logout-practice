@@ -5,12 +5,9 @@ import com.loginlogout.loginlogout.domain.member.dto.MemberJoinDto;
 import com.loginlogout.loginlogout.domain.member.dto.MemberLoginDto;
 import com.loginlogout.loginlogout.domain.member.model.Member;
 import com.loginlogout.loginlogout.domain.member.repository.MemberRepository;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.sql.DataSource;
 
 @Service
 public class MemberService {

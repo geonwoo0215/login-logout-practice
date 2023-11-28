@@ -4,6 +4,6 @@ create table member
     id bigint auto_increment primary key,
     login_id varchar(20),
     email varchar(20),
-    password varchar(20),
+    password varchar(100),
     nick_name varchar(20)
 )

@@ -14,10 +14,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @ExtendWith(MockitoExtension.class)
-class MemberServiceTest {
+class MemberServiceSliceTest {
 
     @Mock
     MemberRepository memberRepository;

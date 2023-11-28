@@ -10,4 +10,12 @@ public class MemberDto {
         this.id = id;
         this.nickName = nickName;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
 }
