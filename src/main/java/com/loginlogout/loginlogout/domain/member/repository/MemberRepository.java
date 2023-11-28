@@ -7,20 +7,18 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.util.Map;
 import java.util.Optional;
 
+@Repository
 public class MemberRepository {
-
-    public final DataSource dataSource;
-    public final NamedParameterJdbcTemplate template;
-
-    public final SimpleJdbcInsert jdbcInsert;
+    private final NamedParameterJdbcTemplate template;
+    private final SimpleJdbcInsert jdbcInsert;
 
     public MemberRepository(DataSource dataSource) {
-        this.dataSource = dataSource;
         this.template = new NamedParameterJdbcTemplate(dataSource);
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("member")
@@ -46,6 +44,19 @@ public class MemberRepository {
         }
 
     }
+
+    public boolean existsByLoginId(String loginId) {
+        String sql = "select exists( select 1 from member where login_id = :loginId)";
+        Map<String, String> param = Map.of("loginId", loginId);
+        return template.queryForObject(sql, param, Boolean.class);
+    }
+
+    public boolean existsByEmail(String email) {
+        String sql = "select exists( select 1 from member where email = :email)";
+        Map<String, String> param = Map.of("email", email);
+        return template.queryForObject(sql, param, Boolean.class);
+    }
+
 
     public RowMapper<Member> memberRowMapper() {
         return BeanPropertyRowMapper.newInstance(Member.class);

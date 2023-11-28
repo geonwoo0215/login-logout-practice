@@ -13,8 +13,7 @@ public class Member {
     public Member() {
     }
 
-    public Member(Long id, String loginId, String email, String password, String nickName) {
-        this.id = id;
+    public Member(String loginId, String email, String password, String nickName) {
         this.loginId = loginId;
         this.email = email;
         this.password = password;
