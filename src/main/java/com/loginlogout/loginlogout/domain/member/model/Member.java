@@ -1,5 +1,7 @@
 package com.loginlogout.loginlogout.domain.member.model;
 
+import com.loginlogout.loginlogout.domain.member.dto.MemberDto;
+
 import java.util.Objects;
 
 public class Member {
@@ -18,6 +20,10 @@ public class Member {
         this.email = email;
         this.password = password;
         this.nickName = nickName;
+    }
+
+    public MemberDto toMemberDto () {
+        return new MemberDto(this.id, this.nickName);
     }
 
     public Long getId() {

@@ -45,6 +45,18 @@ public class MemberRepository {
 
     }
 
+    public Optional<Member> findByLoginId(String loginId) {
+        String sql = "select * from member where login_id = :loginId";
+
+        try{
+            Map<String, String> param = Map.of("loginId", loginId);
+            Member member = template.queryForObject(sql, param, memberRowMapper());
+            return Optional.of(member);
+        } catch (DataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
     public boolean existsByLoginId(String loginId) {
         String sql = "select exists( select 1 from member where login_id = :loginId)";
         Map<String, String> param = Map.of("loginId", loginId);

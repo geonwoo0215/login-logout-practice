@@ -67,5 +67,17 @@ class MemberRepositoryTest {
 
     }
 
+    @Test
+    @Transactional
+    void findByLoginId() {
+        Member member = new Member("loginId", "email", "password", "nickName");
+        repository.save(member);
+
+        Optional<Member> optionalMember = repository.findByLoginId("loginId");
+        assertThat(optionalMember.isPresent()).isTrue();
+        Member findMember = optionalMember.get();
+        assertThat(member).isEqualTo(findMember);
+    }
+
 
 }

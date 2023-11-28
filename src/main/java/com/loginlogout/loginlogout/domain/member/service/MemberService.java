@@ -1,6 +1,8 @@
 package com.loginlogout.loginlogout.domain.member.service;
 
+import com.loginlogout.loginlogout.domain.member.dto.MemberDto;
 import com.loginlogout.loginlogout.domain.member.dto.MemberJoinDto;
+import com.loginlogout.loginlogout.domain.member.dto.MemberLoginDto;
 import com.loginlogout.loginlogout.domain.member.model.Member;
 import com.loginlogout.loginlogout.domain.member.repository.MemberRepository;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -30,6 +32,14 @@ public class MemberService {
         Member member = memberJoinDto.toMember(encodePassword);
         Member saveMember = memberRepository.save(member);
         return saveMember.getId();
+    }
+
+    public MemberDto login(MemberLoginDto memberLoginDto) {
+
+        return memberRepository.findByLoginId(memberLoginDto.getLoginId())
+                .filter(member -> encoder.matches(memberLoginDto.getPassword(), member.getPassword()))
+                .map(Member::toMemberDto)
+                .orElseThrow(RuntimeException::new);
     }
 
     private void validateDuplicateLoginId(String loginId) {
