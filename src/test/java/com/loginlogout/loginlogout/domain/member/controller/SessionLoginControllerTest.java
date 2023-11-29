@@ -10,15 +10,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
-class CookieLoginControllerTest {
+class SessionLoginControllerTest {
 
     @Autowired
     MockMvc mockMvc;
@@ -34,37 +37,26 @@ class CookieLoginControllerTest {
 
     @Test
     @Transactional
-    void join() throws Exception {
-
-        MemberJoinDto memberJoinDto = new MemberJoinDto("loginId", "email", "password", "nickName");
-        String json = objectMapper.writeValueAsString(memberJoinDto);
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/cookie/members")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
-                .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andDo(MockMvcResultHandlers.print());
-
-    }
-
-    @Test
-    @Transactional
     void login() throws Exception {
-
         MemberJoinDto memberJoinDto = new MemberJoinDto("loginId", "email", "password", "nickName");
         Long id = memberService.join(memberJoinDto);
 
         MemberLoginDto memberLoginDto = new MemberLoginDto("loginId", "password");
         String json = objectMapper.writeValueAsString(memberLoginDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/cookie/members/login")
+        MockHttpSession session = new MockHttpSession();
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/session/members/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
+                        .content(json)
+                        .session(session))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.cookie().exists("id"))
-                .andExpect(MockMvcResultMatchers.cookie().value("id", id.toString()))
-                .andExpect(MockMvcResultMatchers.cookie().maxAge("id", 60))
                 .andDo(MockMvcResultHandlers.print());
+
+        assertThat(session.isInvalid()).isFalse();
+        assertThat(session.getAttribute("id")).isEqualTo(id);
+        assertThat(session.getMaxInactiveInterval()).isEqualTo(60);
+
     }
 
     @Test
@@ -73,12 +65,14 @@ class CookieLoginControllerTest {
         MemberJoinDto memberJoinDto = new MemberJoinDto("loginId", "email", "password", "nickName");
         memberService.join(memberJoinDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/cookie/members/logout"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.cookie().exists("id"))
-                .andExpect(MockMvcResultMatchers.cookie().maxAge("id", 0))
-                .andDo(MockMvcResultHandlers.print());
-    }
+        MockHttpSession session = new MockHttpSession();
 
+        mockMvc.perform(MockMvcRequestBuilders.get("/session/members/logout")
+                        .session(session))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+
+        assertThat(session.isInvalid()).isTrue();
+    }
 
 }

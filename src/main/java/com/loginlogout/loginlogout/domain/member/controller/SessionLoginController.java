@@ -4,9 +4,8 @@ import com.loginlogout.loginlogout.domain.member.dto.MemberDto;
 import com.loginlogout.loginlogout.domain.member.dto.MemberJoinDto;
 import com.loginlogout.loginlogout.domain.member.dto.MemberLoginDto;
 import com.loginlogout.loginlogout.domain.member.service.MemberService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,12 +13,12 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 
 @RestController
-@RequestMapping(value = "/cookie")
-public class CookieLoginController {
+@RequestMapping("/session")
+public class SessionLoginController {
 
     private final MemberService memberService;
 
-    public CookieLoginController(MemberService memberService) {
+    public SessionLoginController(MemberService memberService) {
         this.memberService = memberService;
     }
 
@@ -37,21 +36,25 @@ public class CookieLoginController {
     @PostMapping(value = "/members/login", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> login(
             @RequestBody MemberLoginDto memberLoginDto,
-            HttpServletResponse response
+            HttpServletRequest httpServletRequest
     ) {
         MemberDto memberDto = memberService.login(memberLoginDto);
-        Cookie cookie = new Cookie("id", memberDto.getId().toString());
-        cookie.setMaxAge(60);
-        response.addCookie(cookie);
+       
+        HttpSession session = httpServletRequest.getSession(true);
+
+        session.setAttribute("id", memberDto.getId());
+        session.setMaxInactiveInterval(60);
+
         return ResponseEntity.ok().build();
     }
 
     @GetMapping(value = "/members/logout")
-    public ResponseEntity<Void> logout(HttpServletResponse response) {
-        Cookie cookie = new Cookie("id", null);
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
+    public ResponseEntity<Void> logout(HttpServletRequest request) {
+
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
         return ResponseEntity.ok().build();
     }
-
 }
