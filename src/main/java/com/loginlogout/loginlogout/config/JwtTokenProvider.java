@@ -13,9 +13,12 @@ public class JwtTokenProvider {
 
     private final long expirationHours;
 
-    public JwtTokenProvider(@Value("${") String secreteKey, long expirationHours) {
+    private final long refreshExpirationHours;
+
+    public JwtTokenProvider(@Value("${jwt.secret}") String secreteKey, @Value("${jwt.expiration}") long expirationHours, @Value("${jwt.refresh-expiration}") long refreshExpirationHours) {
         this.secreteKey = secreteKey;
         this.expirationHours = expirationHours;
+        this.refreshExpirationHours = refreshExpirationHours;
     }
 
     public String createToken() {
